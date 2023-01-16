@@ -188,7 +188,7 @@ server_pivot_wider = function(input, output, session){
   
   # Save preview to csv
   output$pw_button_save_csv <- downloadHandler(
-    filename = "filename.csv",
+    filename = "data_wide.csv",
     content = function(file) {
       write.csv(pw_preview(), file, row.names = FALSE)
     }

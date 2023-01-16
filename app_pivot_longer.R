@@ -147,7 +147,7 @@ server_pivot_longer = function(input, output, session){
   
   # Save preview to csv
   output$pl_button_save_csv <- downloadHandler(
-    filename = "filename.csv",
+    filename = "data_long.csv",
     content = function(file) {
            write.csv(pl_preview(), file, row.names = FALSE)
          }
