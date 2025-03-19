@@ -15,4 +15,3 @@ Or you can run the app in R:
 # Screenshot
 This is how the app looks like. 
 <img width="1058" alt="image" src="https://github.com/lukekorthals/shiny-data-witch/assets/55378727/6070d12d-8016-4d1d-8531-2189d526d879">
-
