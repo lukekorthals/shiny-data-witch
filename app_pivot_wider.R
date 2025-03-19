@@ -163,6 +163,23 @@ server_pivot_wider = function(input, output, session){
     DT_proxy 
   })
   
+  # # Render preview data table according to input and selected columns
+  # pw_preview <- reactive({
+    
+  #   # Validate data frame and selected columns
+  #   if (is.null(pw_raw_dat()) | is.null(pw_names_from) | is.null(pw_values_from)){
+  #     return(NULL)
+  #   }
+    
+  #   # Create preview data frame
+  #   preview = pw_raw_dat() %>% 
+  #     # Reformat to wide
+  #     pivot_wider(
+  #       names_from = pw_names_from, 
+  #       values_from = pw_values_from
+  #       ) 
+  # })
+
   # Render preview data table according to input and selected columns
   pw_preview <- reactive({
     
@@ -172,12 +189,19 @@ server_pivot_wider = function(input, output, session){
     }
     
     # Create preview data frame
-    preview = pw_raw_dat() %>% 
+    preview = tryCatch({
+      pw_raw_dat() %>% 
       # Reformat to wide
       pivot_wider(
         names_from = pw_names_from, 
         values_from = pw_values_from
         ) 
+    }, error = function(e) {
+      # Capture the error and return a message
+      return(data.frame(Error = paste("Error: ", e$message)))
+    })
+    
+    return(preview)
   })
   
   # Render preview table

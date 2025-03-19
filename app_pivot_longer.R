@@ -121,21 +121,27 @@ server_pivot_longer = function(input, output, session){
   
   # Render preview data table according to input and selected columns
   pl_preview <- reactive({
-    
+  
     # Validate data frame and selected columns
     if(is.null(pl_raw_dat()) | length(pl_selected_columns()) == 0) {
       return(NULL)
     }
     
-    # Create preview data frame
-    preview <- pl_raw_dat() %>% 
-      # Reformat to long 
-      pivot_longer(
-        pl_raw_dat(), 
-        cols = pl_selected_columns(), # selected columns
-        names_to = input$pl_text_names_to, # set column name
-        values_to = input$pl_text_values_to # set column name
+    # Try to create preview data frame
+    preview <- tryCatch({
+      pl_raw_dat() %>% 
+        # Reformat to long 
+        pivot_longer(
+          cols = pl_selected_columns(), # selected columns
+          names_to = input$pl_text_names_to, # set column name
+          values_to = input$pl_text_values_to # set column name
         )
+    }, error = function(e) {
+      # Capture the error and return a message
+      return(data.frame(Error = paste("Error: ", e$message)))
+    })
+    
+    return(preview)
   })
   
   # Render preview table
@@ -155,6 +161,6 @@ server_pivot_longer = function(input, output, session){
   
   # Render used tidyverse code
   output$pl_tidy_code = renderText({
-    paste("preview <- raw_dat %>% pivot_longer(raw_dat, cols = c(", paste0('"', paste(pl_selected_columns(), collapse='", "'), '"'), "), names_to = \"", input$pl_text_names_to, "\", values_to = \"",  input$pl_text_values_to, "\")", sep="")
+    paste("preview <- raw_dat %>% pivot_longer(cols = c(", paste0('"', paste(pl_selected_columns(), collapse='", "'), '"'), "), names_to = \"", input$pl_text_names_to, "\", values_to = \"",  input$pl_text_values_to, "\")", sep="")
   })
 }
